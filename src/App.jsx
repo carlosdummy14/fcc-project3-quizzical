@@ -3,14 +3,14 @@ import Start from './components/Start'
 import Questions from './components/Questions'
 
 function App () {
-  const [questions, setQuestions] = useState([1])
+  const [playing, setPlaying] = useState(false)
 
   return (
     <div className="container">
     {
-     questions.length === 0
-       ? <Start/>
-       : <Questions/>
+     !playing
+       ? <Start playing={setPlaying}/>
+       : <Questions playing={setPlaying}/>
     }
 
     </div>
