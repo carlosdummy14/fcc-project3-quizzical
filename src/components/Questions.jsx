@@ -42,6 +42,7 @@ const data = [
 function Questions ({ playing }) {
   const [questions, setQuestions] = useState([])
   const [score, setScore] = useState(-1)
+  const gameover = score > -1
 
   const setData = () => {
     return data.map((item) => {
@@ -88,6 +89,7 @@ function Questions ({ playing }) {
         key={item.id}
         question={item}
         handleOptionClick={handleOptionClick}
+        gameover={gameover}
       />
     )
   })
@@ -97,14 +99,14 @@ function Questions ({ playing }) {
     <div className="questions">
       {questionsToDraw}
       <div className="footer">
-        {score >= 0 && (
+        {gameover && (
           <p className="footer-text">You scored {score}/5 correct answers</p>
         )}
         <button
           className="btn btn-medium"
           onClick={score >= 0 ? handlePlayAgain : handleCheckAnswares}
         >
-          {score >= 0 ? 'Play again' : 'Check answers'}
+          {gameover ? 'Play again' : 'Check answers'}
         </button>
       </div>
     </div>
