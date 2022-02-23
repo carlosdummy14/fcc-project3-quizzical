@@ -88,9 +88,10 @@ p {
   background-image: url("/blobq-bottom.svg"), url("/blobq-top.svg");
   background-repeat: no-repeat, no-repeat;
   background-position: left bottom, top right;
-  padding: 15px 65px;
+  padding: 15px 50px;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .question {
@@ -106,8 +107,9 @@ p {
 
 .options {
   display: flex;
-  gap: 13px;
-  margin-block: 16px;
+  gap: 5px 13px;
+  flex-wrap: wrap;
+  margin-block: 12px;
 }
 
 .option {
