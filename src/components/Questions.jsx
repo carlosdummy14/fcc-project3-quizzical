@@ -1,60 +1,27 @@
 import { useEffect, useState } from 'react'
 import Question from './Question'
 
-const data = [
-  {
-    id: 1,
-    text: 'How would one say goodbye in Spanish?',
-    options: ['Adios', 'Hola', 'Au Revoir', 'Salir'],
-    correct: 'Adios'
-  },
-  {
-    id: 2,
-    text: 'Which best selling toy of 1983 caused hysteria, resulting in riots breaking in stores?',
-    options: [
-      'Cabbage Patch Kids',
-      'Transformers',
-      'Care Bears',
-      'Rubik’s Cube'
-    ],
-    correct: 'Rubik’s Cube'
-  },
-  {
-    id: 3,
-    text: 'What is the hottest planet in our Solar System?',
-    options: ['Mercury', 'Venus', 'Mars', 'Saturn'],
-    correct: 'Mercury'
-  },
-  {
-    id: 4,
-    text: 'In which country was the caesar salad invented?',
-    options: ['Italy', 'Portugal', 'Mexico', 'France'],
-    correct: 'Italy'
-  },
-  {
-    id: 5,
-    text: 'How Many Hearts Does An Octopus Have?',
-    options: ['One', 'Two', 'Three', 'Four'],
-    correct: 'Three'
-  }
-]
-
 function Questions ({ playing }) {
   const [questions, setQuestions] = useState([])
   const [score, setScore] = useState(-1)
   const gameover = score > -1
 
-  const setData = () => {
-    return data.map((item) => {
+  const getData = async () => {
+    const response = await fetch('https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple')
+    const data = await response.json()
+    setQuestions(data.results.map((item, index) => {
       return {
-        ...item,
+        id: index,
+        text: item.question.replace(/&quot;/g, '"').replace(/&#039;/g, '\'').replace(/&eacute;/g, 'é'),
+        options: [...item.incorrect_answers, item.correct_answer].sort().reverse(),
+        correct: item.correct_answer,
         selected: ''
       }
-    })
+    }))
   }
 
   useEffect(() => {
-    setQuestions(setData())
+    getData().catch(console.error)
   }, [])
 
   const handleOptionClick = (id, option) => {
@@ -80,7 +47,7 @@ function Questions ({ playing }) {
   const handlePlayAgain = () => {
     setScore(-1)
     playing(false)
-    // delete questions array
+    setQuestions([])
   }
 
   const questionsToDraw = questions.map((item) => {
@@ -97,7 +64,9 @@ function Questions ({ playing }) {
   if (questions.length === 0) return <div className="questions"></div>
   return (
     <div className="questions">
+    <div>
       {questionsToDraw}
+    </div>
       <div className="footer">
         {gameover && (
           <p className="footer-text">You scored {score}/5 correct answers</p>
