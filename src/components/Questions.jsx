@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Question from './Question'
+import { textSanitizer } from '../utils'
 
 function Questions ({ playing }) {
   const [questions, setQuestions] = useState([])
@@ -10,11 +11,12 @@ function Questions ({ playing }) {
     const response = await fetch('https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple')
     const data = await response.json()
     setQuestions(data.results.map((item, index) => {
+      const newArray = [...item.incorrect_answers, item.correct_answer].sort().reverse().map(item => textSanitizer(item))
       return {
         id: index,
-        text: item.question.replace(/&quot;/g, '"').replace(/&#039;/g, '\'').replace(/&eacute;/g, 'é'),
-        options: [...item.incorrect_answers, item.correct_answer].sort().reverse(),
-        correct: item.correct_answer,
+        text: textSanitizer(item.question),
+        options: newArray,
+        correct: textSanitizer(item.correct_answer),
         selected: ''
       }
     }))
